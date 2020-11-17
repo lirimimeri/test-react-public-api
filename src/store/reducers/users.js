@@ -40,6 +40,4 @@ function fetchUsersFail(state, action) {
   }
 }
 
-
-
 export default reducer

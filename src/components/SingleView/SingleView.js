@@ -1,47 +1,58 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { connect } from "react-redux";
-import * as actions from "../../store/actions/actions";
+import { ToastContainer, toast } from 'react-toastify'
 
+import * as actions from "../../store/actions/actions";
 import ContentWrapper from "../Layout/ContentWrapper";
 import Header from "./Header/Header";
 import Spinner from "../Common/Spinner/Spinner";
 import UserProfile from "./UserProfile/UserProfile";
 
-class SingleView extends React.Component {
-  state = {}
+const SingleView = props => {
 
-  toggleModal = () => {
-    this.setState((prevState) => {
-      return { isModalOpen: !prevState.isModalOpen };
-    });
-  };
+  const { onFetchUsers, onFetchTodos } = props
 
-  componentDidMount() {
-    this.props.onFetchUsers();
-    this.props.onFetchTodos();
-    // this.props.onFetchPhotos()
+  useEffect(() => {
+    onFetchUsers();
+    onFetchTodos();
+  }, [onFetchTodos, onFetchUsers])
+
+  const { firstLogin, email } = props
+  if(firstLogin && email) {
+    const name = email.substring(0, email.lastIndexOf('@')) 
+    toast('Welcome '+name, {
+      type: 'info',
+      position: 'bottom-center',
+      hideProgressBar: true,
+      draggable: true,
+      closeOnClick: true
+    })
+    props.onFirstLogin()
   }
-
-  render() {
-    const { usersLoading, todosLoading, photosLoading } = this.props;
+  
+    const { usersLoading, todosLoading, photosLoading } = props;
     return (
       <ContentWrapper>
+        <ToastContainer />
         {usersLoading || todosLoading || photosLoading ? (
           <Spinner />
         ) : (
           <Header />
         )}
           <UserProfile />
+          {console.log(props.firstLogin, props.email, props.loading)}
       </ContentWrapper>
     );
-  }
+
 }
 
 const mapStateToProps = (state) => {
   return {
     usersLoading: state.users.loading,
     todosLoading: state.todos.loading,
-    photosLoading: state.photos.loading,
+    firstLogin: state.loginData.firstLogin,
+    email: state.loginData.email,
+    loading: state.loginData.loading
   };
 };
 
@@ -49,7 +60,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     onFetchUsers: () => dispatch(actions.fetchUsers()),
     onFetchTodos: () => dispatch(actions.fetchTodos()),
-    // onFetchPhotos: () => dispatch(actions.fetchPhotos())
+    onFirstLogin: () => dispatch(actions.firstLogin())
   };
 };
 

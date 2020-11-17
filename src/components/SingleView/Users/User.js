@@ -2,10 +2,20 @@ import React from "react";
 import { Col, Card, CardBody, Button } from "reactstrap";
 
 const User = (props) => {
+
+  const onClickHandler = () => {
+    props.getperson()
+    props.showModal()
+  }
+
   return (
-    <Col className="col-xl-3 col-sm-12 col-md-6">
+    <Col className="col-xl-4 col-sm-12 col-md-6">
       <Card>
-        <img alt="Card cap" className="card-img-top" src={props.img} />
+        <img 
+          alt="Card cap" 
+          className="card-img-top" 
+          src={props.img} 
+          height="300"/>
 
         <CardBody>
           <h4>{props.username}</h4>
@@ -23,7 +33,7 @@ const User = (props) => {
           <div className="text-center w-100">
             <Button 
               color="dark" 
-              onClick={props.showModal}>
+              onClick={onClickHandler}>
               Main Profile
             </Button>
           </div>

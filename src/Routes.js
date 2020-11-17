@@ -17,6 +17,7 @@ const SubMenu = lazy(() => import('./components/SubMenu/SubMenu'));
 const Users = lazy(() => import('./components/SingleView/Users/Users'))
 const Todos = lazy(() => import('./components/SingleView/Todos/Todos'))
 const Gallery = lazy(() => import('./components/SingleView/Photos/Photos'))
+const Auth = lazy(() => import('./auth/Auth'))
 
 // List of routes that uses the page layout
 // listed here to Switch between layouts
@@ -63,6 +64,7 @@ const Routes = ({ location }) => {
                                 <Route path="/users" component={waitFor(Users)}/>
                                 <Route path="/todos" component={waitFor(Todos)}/>
                                 <Route path="/gallery" component={waitFor(Gallery)}/>
+                                <Route path="/auth" component={waitFor(Auth)}/>
                                 <Redirect to="/singleview"/>
                             </Switch>
                         </Suspense>

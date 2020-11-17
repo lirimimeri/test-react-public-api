@@ -3,7 +3,9 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as actions from '../../store/actions/actions';
+import { withRouter } from 'react-router-dom'
 
+import 'react-toastify/dist/ReactToastify.css'
 import ToggleFullscreen from '../Common/ToggleFullscreen';
 import HeaderRun from './Header.run'
 
@@ -18,9 +20,13 @@ class Header extends Component {
         this.props.actions.toggleSetting('showUserBlock');
     }
 
-    toggleOffsidebar = e => {
+    auth = e => {
         e.preventDefault()
-        this.props.actions.toggleSetting('offsidebarOpen');
+        if (this.props.isLogedIn) {
+            this.props.onLogout()
+        }
+        
+        this.props.history.push('/auth')
     }
 
     toggleCollapsed = e => {
@@ -44,6 +50,17 @@ class Header extends Component {
     }
 
     render() {
+        let authText
+        if (this.props.location.pathname !== '/auth') {
+            
+            authText = (
+                <a className="nav-link" href="" onClick={this.auth}>
+                    <em className="fas fa-user">{this.props.isLogedIn ? 'log out' : 'login'}</em>
+                </a>
+            )
+        }
+        
+
         return (
             <header className="topnavbar-wrapper">
                 { /* START Top Navbar */ }
@@ -84,12 +101,7 @@ class Header extends Component {
                     { /* END Left navbar */ }
                     { /* START Right Navbar */ }
                     <ul className="navbar-nav flex-row">
-                        { /* Search icon */ }
-                        <li className="nav-item">
-                            <a className="nav-link" href="" data-search-open="">
-                                <em className="icon-magnifier"></em>
-                            </a>
-                        </li>
+                        
                         { /* Fullscreen (only desktops) */ }
                         <li className="nav-item d-none d-md-block">
                             <ToggleFullscreen className="nav-link"/>
@@ -98,9 +110,7 @@ class Header extends Component {
                         
                         { /* START Offsidebar button */ }
                         <li className="nav-item">
-                            <a className="nav-link" href="" onClick={this.toggleOffsidebar}>
-                                <em className="icon-notebook"></em>
-                            </a>
+                            { authText }
                         </li>
                         { /* END Offsidebar menu */ }
                     </ul>
@@ -118,9 +128,8 @@ class Header extends Component {
                 </nav>
                 { /* END Top Navbar */ }
             </header>
-            );
+        );
     }
-
 }
 
 Header.propTypes = {
@@ -128,10 +137,21 @@ Header.propTypes = {
     settings: PropTypes.object
 };
 
-const mapStateToProps = state => ({ settings: state.settings })
-const mapDispatchToProps = dispatch => ({ actions: bindActionCreators(actions, dispatch) })
+const mapStateToProps = state =>{
+    return { 
+        settings: state.settings,
+        isLogedIn: state.loginData.idToken !== null,
+        email: state.loginData.email,
+    }
+} 
+const mapDispatchToProps = dispatch => {
+    return {
+        actions: bindActionCreators(actions, dispatch),
+        onLogout: () => dispatch(actions.logout()),
+    }
+}
 
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(Header);
+)(withRouter(Header));

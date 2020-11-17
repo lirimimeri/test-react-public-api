@@ -2,14 +2,12 @@ import React from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 
-import Spinner from "../../Common/Spinner/Spinner";
 import TimeNow from './TimeNow'
 
 const Header = (props) => {
   const cursor = {
     cursor: "pointer",
-  };
-
+  }
 
   return (
     <div>
@@ -133,7 +131,6 @@ const mapStateToProps = (state) => {
   return {
     users : state.users.users.data,
     todos : state.todos.todos,
-    photos: state.photos.photos,
   }
 }
 
